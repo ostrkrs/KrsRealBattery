@@ -1,9 +1,38 @@
 # Changelog
 
+# Changelog
+
+## v3.4.1
+
+### Minor Improvements
+- **New Fleet Overview screen** on the MFD Extended BMS bay: press the BMS button again while on the main battery screen to see every RealBattery-equipped vessel in the save at a glance — charge, net rate, time-to-empty, and whether the reading is live or an estimate for a vessel that's out of physics range — sorted alphabetically, with your own ship pinned at the top. Press BMS again to return to the main screen.
+- **List scrolling** on both BMS screens: the monitor's UP/DOWN/HOME keys now scroll long battery or fleet lists, with a status line at the bottom showing your position and a key reminder.
+- Long vessel names that don't fit their column now scroll across instead of being cut off.
+- Charge-level colors on the Fleet Overview now match the same low/critical bands used by VesselViewer EFIS's fuel gauges, for a consistent reading across screens.
+- The remaining-time column turns amber inside the low-power alarm's own lead time and disappears once actually at zero, instead of sitting on a permanent 00m:00s.
+
+### Bugfixes
+- Fixed a vessel that leaves physics range (e.g. a jettisoned stage drifting away) disappearing from the Fleet Overview entirely instead of showing as an estimate, as long as no scene change or save happened in between.
+- Fixed the status line at the bottom of both BMS screens floating up against the last row of content instead of staying anchored to the bottom of the screen when a list was short.
+
+## v3.4.0
+
+### Minor Improvements
+- **MFD Extended bay now shows real vessel data** (previously a hello-world placeholder, see v3.3.4): the bay (renamed **BMS** on the MFD Extended host side) displays live autonomy (time until the first battery pack in the vessel actually depletes, not a crude vessel-wide average that means nothing when packs have very different C-rates), net rate (auto-scaling W/kW/MW/GW), reserve (physical total kWh, auto-scaling Wh/kWh/MWh/GWh), and a per-battery table (chemistry, state of charge, health/efficiency, and a status column flagging RUNAWAY, OVERHEAT, OFFLINE, or routine keep-warm states like WARMUP/COOLDOWN/WARM/COLD/SHUTDOWN). RUNAWAY blinks; a battery that's simultaneously overheating and shut down by the PCM alternates between OVERHEAT and OFFLINE instead of only showing one.
+- Added "_overheat!_" PAW status.
+
+### Bugfixes
+- Fixed the low-power alarm's vessel autonomy estimate showing 100% reserve on a vessel whose batteries were all dead or thermally capped, since it was computed against the derated (shrunk-to-near-zero) capacity instead of the physical one.
+- Fixed an overheat status (`Status` PAW field, and anything else reading it, e.g. MFD/CAS) getting stuck permanently after a PCM auto-shutdown, even once the battery had genuinely cooled back down.
+- Fixed thermal wear accumulated from prolonged overheat (only reachable with the PCM disabled/bypassed) not being reflected in `BatteryHealth`/`StoredCharge` until the next charge or discharge cycle (a battery could appear undamaged and then suddenly jump to fully dead once that next cycle ran).
+
+### Credits
+- Thanks to forum user **Kvaksa** for the original suggestion behind the vessel-wide battery autonomy estimate, now live above.
+
 ## v3.3.4
 
 ### Minor Improvements
-- **Initial MFD Extended compatibility**: RealBattery now ships its own bay page ("BATT") for **MFD Extended**, the shared MAS multi-function-display add-on hosting a second, additive screen alongside a craft's existing IVA monitor. Currently a hello-world/verification page confirming the integration renders correctly end-to-end; the real vessel/fleet power readout (battery reserve, net EC rate, time to depletion, all already exposed via `RealBatteryPowerLedger`) follows in a later release. No effect on players without MFD Extended installed.
+- **Initial MFD Extended compatibility**: RealBattery now ships its own bay page ("BATT") for [MFD Extension](https://github.com/Rjoande/MFD-Extension), the shared MAS multi-function-display add-on hosting a second, additive screen alongside a craft's existing IVA monitor. Currently a hello-world/verification page confirming the integration renders correctly end-to-end; the real vessel/fleet power readout (battery reserve, net EC rate, time to depletion, all already exposed via `RealBatteryPowerLedger`) follows in a later release. No effect on players without MFD Extended installed.
 
 ## v3.3.3
 
